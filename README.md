@@ -1,47 +1,86 @@
-# Hospital Crisis · เข้าเวรกับ AI
+# โรงพยาบาลวิกฤต · เข้าเวรกับ AI
 
-Playable Thai-language emergency-room management prototype, built from the supplied planning documents. Uses Python 3.10+ and browser-native JavaScript; no runtime packages, API keys, or database required.
+เกมส่งเวชภัณฑุในโรงพยาบาล สร้างด้วย **Godot 4.6.3** ใช้ภาพฉากและตัวละครที่สร้างใหม่ในสไตล์ 3D จำลอง เกมเล่นบนพื้นภาพ 2D (2.5D) ไม่ใช่โมเดล 3D ที่หมุนกล้องได้
 
-## Public deployment (Render)
+## เล่นอย่างไร
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/narisunt-ctrl/Hospital-crisis)
+เข้าเวร 3 นาที เข็นรถไปคลังยาหรือแล็บ แล้วส่งของให้ตรงคำขอของผู้ป่วยก่อนแถบเวลาหมด มีหุ่นยนต์ผู้ช่วยบอกเส้นทาง คอมโบคะแนน เสียงประกอบ และสถิติสูงสุดที่บันทึกในเครื่อง
 
-Connect your GitHub account to Render, select this repository, and create the Blueprint service. The included `render.yaml` runs the test suite during build, starts the Python server on Render's assigned port, and checks the home page for readiness. Render provides the public HTTPS address after deployment succeeds. No API keys are needed by the game. Review the free plan availability in Render before creating the service; free services can sleep when idle.
+- **WASD / ลูกศร** เดิน หรือคลิก/แตะพื้นให้เดินตามเส้นทาง
+- คลิก/แตะป้ายสถานีเพื่อเดินไปรับ–ส่งของอัตโนมัติเมื่อถึงจุด
+- **E / Space** รับหรือส่งของด้วยตัวเองเมื่ออยู่ใกล้สถานี
+- **H** เปิด/ปิดเส้นทางแนะนำของหุ่นยนต์
+- **Shift** วิ่งระยะสั้น มีเวลาพัก 3.5 วินาที
+- **Esc** หยุด/เล่นต่อ หรือใช้ปุ่ม II บนหน้าจอ
+- ส่งสำเร็จ **3 / 6 / 10 ครั้ง** ได้ **1 / 2 / 3 ดาว** พลาด 3 ครั้งจะจบเวรก่อนเวลา
 
-This is a public demo. Each tab creates a separate game with an unguessable session identifier. Sessions are in memory and disappear on restart, redeploy, or service sleep. The current single-process prototype is limited to 200 sessions until restart and has no production abuse protection. No real patient information should be entered. GitHub repository publication alone does not deploy the server.
+มือถือแนะนำแนวนอน ใช้ป้ายสถานีและปุ่มในจอได้ทั้งหมด ออกจากแท็บจะหยุดเกมอัตโนมัติ เปิด/ปิดเสียงได้ที่หน้าแรกหรือเมนูหยุดเกม ผู้ช่วยเป็นกฎหาเส้นทางภายในเกม ไม่ได้เรียกบริการ AI หรือแก้โค้ดอัตโนมัติ
 
-## Run
+## เปิดโปรเจกต์ Godot
+
+เปิด [godot/project.godot](godot/project.godot) ด้วย Godot **4.6.3 stable** แล้วกด **F6 / F5** หรือ:
 
 ```sh
-cd /workspace/Hospital-crisis
-python3 server.py --port 8000
+godot --editor --path godot
+godot --path godot
 ```
 
-Open the served page in your browser. Select a patient, then assign an available bed and staff team. Both are needed to begin care. Start or pause the clock; complete a three-minute wave. Normal, overload and mass-casualty scenarios share the same engine. Seed controls repeatable arrivals. The assistant proposes one pending allocation; approval is explicit. A human action discards the pending proposal.
+ตัวเกมทำงานใน GDScript จริง ไม่ได้ฝังหน้าจอ dashboard ใน Godot ไม่ต้องมี API key หรือแพ็กเกจ Python เพิ่ม ใช้ตัวอักษรไทยและละตินที่รวมไว้ในโปรเจกต์ จึงไม่ต้องโหลด Google Fonts
 
-## Validate
+## เล่นเวอร์ชันเว็บที่ส่งออกแล้ว
 
 ```sh
+python3 server.py --host 127.0.0.1 --port 8000
+```
+
+เปิดหน้าแรกของเซิร์ฟเวอร์ในเบราว์เซอร์ที่รองรับ **WebGL 2 / WebAssembly** หน้าแรกโหลดเกมจาก `web/play/` เวอร์ชันนี้ไม่ใช้ threads จึงไม่ต้องตั้ง COOP/COEP headers เกมดาวน์โหลดครั้งแรกประมาณ 40 MB และไม่รองรับการเปิดผ่าน `file://`
+
+ไฟล์ Web export รวมไว้ใน repository แล้ว จึงรันบน Render ด้วย Python server เดิมได้ ไม่ต้องติดตั้ง Godot ที่ Render สถานะเกมอยู่ในเบราว์เซอร์ สถิติสูงสุดใช้พื้นที่เก็บข้อมูลของเบราว์เซอร์ ไม่รับประกันการเก็บสถิติเมื่อปิดโหมดส่วนตัวหรือปิดการจัดเก็บข้อมูล
+
+## แก้เกมและส่งออกเว็บใหม่
+
+ต้องใช้ Godot 4.6.3 และ export templates รุ่นเดียวกัน บน Linux/cloud:
+
+```sh
+./tools/export_web.sh
+```
+
+สคริปต์ import assets, รันทดสอบเกมใน Godot, export เว็บแบบ single-thread และสร้าง `web/play/build.json` เพื่อตรวจว่า source และไฟล์ export ตรงกัน หากยังไม่มี templates จะดาวน์โหลด archive ทางการ (~1.2 GB) ตรวจ SHA-512 แล้วเก็บเฉพาะ Web templates บนเครื่อง cloud นี้ cache อยู่ที่ `/workspace/.cache/godot/` โปรเจกต์ใน Godot editor ต้องใช้ data path เดียวกันเมื่อส่งออกจาก editor:
+
+```sh
+XDG_DATA_HOME=/workspace/.cache/godot/data XDG_CONFIG_HOME=/workspace/.cache/godot/config godot --editor --path godot
+```
+
+บนเครื่องอื่นสามารถติดตั้ง templates ผ่าน Godot editor แล้วเลือก preset **Web** ได้ จากนั้นรัน `python3 tools/verify_web.py --write` หลัง export สำเร็จ ทุกครั้งที่แก้ไฟล์ใน `godot/` ต้อง export ใหม่และนำไฟล์ใน `web/play/` ไป deploy ด้วย
+
+## ตรวจสอบ
+
+```sh
+# เกม Godot: การเดิน รับส่งของ ของผิดชนิด แล็บ หยุดเกม วิ่ง หมดเวลา และเล่นใหม่
+godot --headless --path godot -- --smoke-test
+# ตรวจ source กับ Web export
+python3 tools/verify_web.py
+# ระบบจำลอง ER รุ่นก่อนที่ยังเก็บไว้แยกต่างหาก
 python3 -m unittest discover -s tests -v
-node --check web/app.js
 ```
 
-## Implemented
+การทดสอบผ่านเบราว์เซอร์ (ตัวเลือกสำหรับพัฒนา ต้องติดตั้ง Python Playwright และ Chromium):
 
-- Server-authoritative seeded simulation; serialized mutations and explicit virtual clock.
-- Four validated actions, resource exclusivity, optimistic state version, command idempotency and source attribution.
-- Three scenarios, staff and bed management, bounded transfers, urgency escalation, pause and speed controls.
-- Rule-based assistant with human approval; wave score, timestamped event log and downloadable JSON run record.
-- Responsive Thai interface; static frontend served with same-origin API.
+```sh
+python3 tools/test_web.py
+```
 
-## Toy rules v1
+ทดสอบด้วย input จริงทั้งเมาส์บนคอมและ touch บนมือถือแนวนอน ตรวจการรับยา รับผลแล็บ ส่งสำเร็จ คะแนน การหยุดเวลา และการกลับเข้าเกม เก็บ screenshots ใน `/tmp/hospital-godot-check/`
 
-Each wave lasts 180 virtual seconds with 4 beds, 3 teams and 3 partner transfer slots. Scenarios spawn 10/15/20 synthetic patients. Care requires a bed and team for 14–25 virtual seconds. Severity 1/2/3 wait targets are 65/40/20 seconds; exceeding these lowers the safety score. Only severity 1–2 can transfer. Priority may be increased, never lowered below initial severity. These are fictional game mechanics, with no clinical calibration or reviewer approval.
+## Deploy
 
-Safety = 100 × fraction not exceeding wait target. Efficiency = 100 × resolved / arrived (transfers count as resolved). Resources = occupied treatment team-seconds / available team-seconds × 100. Waiting = 100 minus average capped urgency-weighted wait penalty (min(100, wait × severity × 2)). Fitness = .40 safety + .25 efficiency + .20 resources + .15 waiting. Live scores are provisional until wave end. Version: `toy-v1`.
+`render.yaml` ใช้ Python server และตรวจ Web export ระหว่าง build หลัง commit/push และ deploy สำเร็จ หน้าแรกของเว็บไซต์จะโหลดเกม Godot การแก้ไฟล์ใน workspace ไม่ได้อัปเดตเว็บไซต์ Render อัตโนมัติ
 
-## Scope still outstanding
+## ขอบเขตและที่มาของภาพ
 
-This is a playable vertical slice, not completion of the attached P0 specification. Frontend uses vanilla JavaScript and CSS instead of React/Phaser; backend uses Python standard library instead of FastAPI. There is no Codex SDK integration, actual code evolution, isolated candidate worker, protected 20-case holdout, promotion/rollback registry, persistent game storage, multiplayer, or verified replay. Export is a recorded run, explicitly not a verified replay. Tests cover reproducibility but are not protected benchmark evidence. No improvement claims are made. Sessions are in memory and reset on server restart; capacity is 200 sessions per process. Intended for local development, not public multi-user production deployment. Optional Google Font has system fallback.
-
-Original supplied planning documents are preserved under `docs/planning/`. This code was created before the event date described there; it must not be represented as event-day development.
+- เกมปัจจุบันเป็น single-player delivery game; หุ่นยนต์เป็น companion ไม่ใช่ผู้เล่นออนไลน์ ไม่มี multiplayer หรือระบบวิวัฒนาการโค้ด
+- ฉากโรงพยาบาล ตัวละครเข็นรถ และหุ่นยนต์ใน `godot/assets/` สร้างขึ้นใหม่ด้วยเครื่องมือสร้างภาพ มีภาพอ้างอิงจากผู้ใช้เป็นทิศทางสไตล์ ใช้ sprite แบบทิศเดียวพร้อมการขยับระหว่างเดิน ไม่ใช่ชุด animation 3D หลายทิศ
+- เพลงและเอฟเฟกต์เป็นเสียงสังเคราะห์ที่สร้างสำหรับต้นแบบนี้ ฟอนต์ Noto รวม license ใน `godot/assets/FONT-LICENSE.txt`
+- `engine.py`, API ใน `server.py` และ `tests/test_engine.py` เป็น simulator ER จากต้นแบบเดิม แยกจาก gameplay Godot ไม่ได้ใช้ควบคุมการส่งของในเกมใหม่
+- เอกสารต้นฉบับใน `docs/planning/` เก็บไว้เป็นข้อมูลอ้างอิง ไม่ใช่รายการฟีเจอร์ที่ทำครบแล้ว
+- ผู้ป่วยและกติกาทั้งหมดเป็นเรื่องสมมติ ไม่ใช่คำแนะนำทางการแพทย์

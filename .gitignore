@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Godot editor cache is regenerated; keep .import sidecars and .uid files.
+godot/.godot/

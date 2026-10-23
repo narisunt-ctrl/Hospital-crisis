@@ -5,7 +5,7 @@ services:
     plan: free
     region: singapore
     branch: main
-    buildCommand: python3 -m unittest discover -s tests -v
+    buildCommand: python3 -m unittest discover -s tests -v && python3 tools/verify_web.py
     startCommand: python3 server.py --host 0.0.0.0 --port $PORT
     healthCheckPath: /
     envVars:
