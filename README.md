@@ -2,6 +2,14 @@
 
 Playable Thai-language emergency-room management prototype, built from the supplied planning documents. Uses Python 3.10+ and browser-native JavaScript; no runtime packages, API keys, or database required.
 
+## Public deployment (Render)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/narisunt-ctrl/Hospital-crisis)
+
+Connect your GitHub account to Render, select this repository, and create the Blueprint service. The included `render.yaml` runs the test suite during build, starts the Python server on Render's assigned port, and checks the home page for readiness. Render provides the public HTTPS address after deployment succeeds. No API keys are needed by the game. Review the free plan availability in Render before creating the service; free services can sleep when idle.
+
+This is a public demo. Each tab creates a separate game with an unguessable session identifier. Sessions are in memory and disappear on restart, redeploy, or service sleep. The current single-process prototype is limited to 200 sessions until restart and has no production abuse protection. No real patient information should be entered. GitHub repository publication alone does not deploy the server.
+
 ## Run
 
 ```sh
